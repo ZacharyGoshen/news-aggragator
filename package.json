@@ -1,0 +1,24 @@
+{
+  "name": "news-aggragator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "article.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZacharyGoshen/news-aggragator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZacharyGoshen/news-aggragator/issues"
+  },
+  "homepage": "https://github.com/ZacharyGoshen/news-aggragator#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2"
+  }
+}
