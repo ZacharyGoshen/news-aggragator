@@ -1,3 +1,43 @@
 .article {
-    border: solid 2px black;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 20px;
+    transform: translateY(0px);
+    -webkit-transform: translateY(0px);
+    transition: .2s ease-in-out;
+    -webkit-transition: .2s ease-in-out;
+}
+.article:hover {
+    box-shadow: -10px 10px 8px #888888;
+    cursor: pointer;
+    transform: translateY(-10px);
+    -webkit-transform: translateY(-10px);
+}
+.article-container {
+    width: 25%;
+}
+.article-author {
+    font-size: var(--font-very-small);
+}
+.article-date {
+    font-size: var(--font-very-small);
+}
+.article-description {
+    font-size: var(--font-very-small);
+    margin-bottom: 10px;
+}
+.article-source {
+    font-size: var(--font-very-small);
+}
+.article-title {
+    font-weight: bold;
+    font-size: var(--font-small);
+    margin-bottom: 10px;
+}
+.article-thumbnail {
+    padding: 10px 0px;
+}
+.article-thumbnail img {
+    max-width: 100%;
 }

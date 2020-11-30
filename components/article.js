@@ -9,14 +9,21 @@ class Article extends React.Component {
     }
 
     render() {
-        console.log(this.props.article);
-        
         return (
-            <div className="article">
-                <p>{ this.props.article.title }</p>
-                <p>{ this.props.article.publishedDate }</p>
-                <img src={ this.props.article.thumbnailUrl }></img>
-                <a href={ this.props.article.url }>{ this.props.article.url }</a>
+            <div 
+                className="article-container" 
+                onClick={ () => location.href = this.props.article.url }
+            >
+                <div className="article">
+                    <div className="article-title">{ this.props.article.title }</div>
+                    <div className="article-author">{ this.props.article.author }</div>
+                    <div className="article-date">{ this.props.article.datePublished }</div>
+                    <div className="article-thumbnail" >
+                        <img src={ this.props.article.thumbnailUrl }></img>
+                    </div>
+                    <div className="article-description">{ this.props.article.description }</div>
+                    <div className="article-source">{ this.props.article.source }</div>
+                </div>
             </div>
         );
     }

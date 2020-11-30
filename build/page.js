@@ -15,48 +15,89 @@ var Page = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
 
         _this.state = {
-            articles: null,
-            isLoaded: false
+            articles: [],
+            isLoaded: {
+                bing: false,
+                nyt: false
+            }
         };
         return _this;
     }
 
     _createClass(Page, [{
-        key: "parseNytArticle",
-        value: function parseNytArticle(article) {
-            var thumbnailExists = article.media.length;
-            var thumbnailUrl = thumbnailExists ? article.media[0]["media-metadata"][0].url : null;
-
-            return {
-                title: article.title,
-                publishedDate: article.published_date,
-                thumbnailUrl: thumbnailUrl,
-                url: article.url
-            };
-        }
-    }, {
-        key: "componentDidMount",
-        value: function componentDidMount() {
+        key: 'fetchArticles',
+        value: function fetchArticles(endpoint, parsingFunction, source) {
             var _this2 = this;
 
-            fetch('https://api.nytimes.com/svc/mostpopular/v2/emailed/1.json?api-key=i1ARVGjJRKgBIBXtlFyC3Nw9UyGMC96p').then(function (res) {
+            fetch(endpoint).then(function (res) {
                 return res.json();
             }).then(function (json) {
+                var articles = _this2.state.articles.concat(parsingFunction(json));
+                var isLoaded = _this2.state.isLoaded[source] = true;
                 _this2.setState({
-                    articles: json.results,
-                    isLoaded: true
+                    articles: articles,
+                    loadedBoolean: isLoaded
                 });
             }, function (error) {});
         }
     }, {
-        key: "renderArticle",
+        key: 'parseNytJson',
+        value: function parseNytJson(json) {
+            var articles = [];
+            json.results.forEach(function (article) {
+                var author = article.byline.slice(3);
+                var thumbnailExists = article.media.length;
+                var thumbnailUrl = thumbnailExists ? article.media[0]["media-metadata"][2].url : null;
+
+                articles.push({
+                    author: author,
+                    description: article.abstract,
+                    datePublished: article.published_date,
+                    source: 'New York Times',
+                    thumbnailUrl: thumbnailUrl,
+                    title: article.title,
+                    url: article.url
+                });
+            });
+
+            return articles;
+        }
+    }, {
+        key: 'parseBingJson',
+        value: function parseBingJson(json) {
+            var articles = [];
+            json.value.forEach(function (article) {
+                var thumbnailExists = article.image;
+                var thumbnailUrl = thumbnailExists ? article.image.thumbnail.contentUrl : null;
+
+                articles.push({
+                    author: null,
+                    description: article.description,
+                    datePublished: article.datePublished.slice(0, 10),
+                    source: article.provider[0].name,
+                    thumbnailUrl: thumbnailUrl,
+                    title: article.name,
+                    url: article.url
+                });
+            });
+
+            return articles;
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.fetchArticles('https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key=i1ARVGjJRKgBIBXtlFyC3Nw9UyGMC96p', this.parseNytJson, 'nyt');
+            this.fetchArticles('https://api.bing.microsoft.com/v7.0/news?subscription-key=c214921f95324775a0c1fe7cc61ae74b', this.parseBingJson, 'bing'); // 1000 calls per month
+        }
+    }, {
+        key: 'renderArticle',
         value: function renderArticle(article) {
             return React.createElement(Article, {
-                article: this.parseNytArticle(article)
+                article: article
             });
         }
     }, {
-        key: "render",
+        key: 'render',
         value: function render() {
             var _this3 = this;
 
@@ -64,19 +105,22 @@ var Page = function (_React$Component) {
                 articles = _state.articles,
                 isLoaded = _state.isLoaded;
 
-            if (!isLoaded) {
+            if (!isLoaded.bing || !isLoaded.nyt) {
                 return React.createElement(
-                    "div",
-                    { className: "page" },
-                    "Loading"
+                    'div',
+                    { className: 'page' },
+                    'Loading...'
                 );
             } else {
+                articles.sort(function (a, b) {
+                    return a.datePublished < b.datePublished ? 1 : -1;
+                });
                 var articleComponents = articles.map(function (article) {
                     return _this3.renderArticle(article);
                 });
                 return React.createElement(
-                    "div",
-                    { className: "page" },
+                    'div',
+                    { className: 'page' },
                     articleComponents
                 );
             }

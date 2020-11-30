@@ -25,26 +25,49 @@ var Article = function (_React$Component) {
     _createClass(Article, [{
         key: "render",
         value: function render() {
-            console.log(this.props.article);
+            var _this2 = this;
 
             return React.createElement(
                 "div",
-                { className: "article" },
+                {
+                    className: "article-container",
+                    onClick: function onClick() {
+                        return location.href = _this2.props.article.url;
+                    }
+                },
                 React.createElement(
-                    "p",
-                    null,
-                    this.props.article.title
-                ),
-                React.createElement(
-                    "p",
-                    null,
-                    this.props.article.publishedDate
-                ),
-                React.createElement("img", { src: this.props.article.thumbnailUrl }),
-                React.createElement(
-                    "a",
-                    { href: this.props.article.url },
-                    this.props.article.url
+                    "div",
+                    { className: "article" },
+                    React.createElement(
+                        "div",
+                        { className: "article-title" },
+                        this.props.article.title
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "article-author" },
+                        this.props.article.author
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "article-date" },
+                        this.props.article.datePublished
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "article-thumbnail" },
+                        React.createElement("img", { src: this.props.article.thumbnailUrl })
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "article-description" },
+                        this.props.article.description
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "article-source" },
+                        this.props.article.source
+                    )
                 )
             );
         }

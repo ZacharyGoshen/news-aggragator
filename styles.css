@@ -1,0 +1,11 @@
+:root {
+    --font-very-large: 4em;
+    --font-large: 3em;
+    --font-medium: 1.5em;
+    --font-small: 1em;
+    --font-very-small: .8em;
+}
+body, html {
+    background-color: #f9f9f9;
+    margin: 0;
+}
