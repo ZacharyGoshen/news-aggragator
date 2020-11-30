@@ -5,6 +5,7 @@ class Page extends React.Component {
             articles: [],
             isLoaded: {
                 bing: false,
+                guardian: false,
                 nyt: false
             }
         }
@@ -24,6 +25,47 @@ class Page extends React.Component {
             },
             (error) => {},
         )
+    }
+
+    parseBingJson(json) {
+        let articles = [];
+        json.value.forEach(article => {
+            const thumbnailExists = article.image;
+            const thumbnailUrl = thumbnailExists ? article.image.thumbnail.contentUrl : null;
+
+            articles.push({
+                author: null,
+                description: article.description,
+                datePublished: article.datePublished.slice(0, 10),
+                source: article.provider[0].name,
+                thumbnailUrl: thumbnailUrl,
+                title: article.name,
+                url: article.url
+            });
+        });
+
+        return articles;
+    }
+
+    parseGuardianJson(json) {
+        console.log(json);
+
+        let articles = [];
+        json.response.results.forEach(article => {
+            articles.push({
+                author: null,
+                description: null,
+                datePublished: article.webPublicationDate.slice(0, 10),
+                source: 'The Guardian',
+                thumbnailUrl: null,
+                title: article.webTitle,
+                url: article.webUrl
+            });
+        });
+
+        console.log(articles);
+
+        return articles;
     }
 
     parseNytJson(json) {
@@ -47,29 +89,10 @@ class Page extends React.Component {
         return articles;
     }
 
-    parseBingJson(json) {
-        let articles = [];
-        json.value.forEach(article => {
-            const thumbnailExists = article.image;
-            const thumbnailUrl = thumbnailExists ? article.image.thumbnail.contentUrl : null;
-
-            articles.push({
-                author: null,
-                description: article.description,
-                datePublished: article.datePublished.slice(0, 10),
-                source: article.provider[0].name,
-                thumbnailUrl: thumbnailUrl,
-                title: article.name,
-                url: article.url
-            });
-        });
-
-        return articles;
-    }
-
     componentDidMount() {
+        // this.fetchArticles('https://api.bing.microsoft.com/v7.0/news?subscription-key=c214921f95324775a0c1fe7cc61ae74b', this.parseBingJson, 'bing'); // 1000 calls per month
+        this.fetchArticles('https://content.guardianapis.com/search?api-key=7f46d694-03c3-4369-933b-31ade0ab34ee', this.parseGuardianJson, 'guardian');
         this.fetchArticles('https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key=i1ARVGjJRKgBIBXtlFyC3Nw9UyGMC96p', this.parseNytJson, 'nyt');
-        this.fetchArticles('https://api.bing.microsoft.com/v7.0/news?subscription-key=c214921f95324775a0c1fe7cc61ae74b', this.parseBingJson, 'bing'); // 1000 calls per month
     }
 
     renderArticle(article) {
@@ -83,7 +106,7 @@ class Page extends React.Component {
 
     render() {
         const { articles, isLoaded } = this.state;
-        if (!isLoaded.bing || !isLoaded.nyt) {
+        if (/* !isLoaded.bing || */ !isLoaded.guardian || !isLoaded.nyt) {
             return (
                 <div className="page">
                     Loading...

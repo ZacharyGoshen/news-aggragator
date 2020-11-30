@@ -18,6 +18,7 @@ var Page = function (_React$Component) {
             articles: [],
             isLoaded: {
                 bing: false,
+                guardian: false,
                 nyt: false
             }
         };
@@ -39,6 +40,49 @@ var Page = function (_React$Component) {
                     loadedBoolean: isLoaded
                 });
             }, function (error) {});
+        }
+    }, {
+        key: 'parseBingJson',
+        value: function parseBingJson(json) {
+            var articles = [];
+            json.value.forEach(function (article) {
+                var thumbnailExists = article.image;
+                var thumbnailUrl = thumbnailExists ? article.image.thumbnail.contentUrl : null;
+
+                articles.push({
+                    author: null,
+                    description: article.description,
+                    datePublished: article.datePublished.slice(0, 10),
+                    source: article.provider[0].name,
+                    thumbnailUrl: thumbnailUrl,
+                    title: article.name,
+                    url: article.url
+                });
+            });
+
+            return articles;
+        }
+    }, {
+        key: 'parseGuardianJson',
+        value: function parseGuardianJson(json) {
+            console.log(json);
+
+            var articles = [];
+            json.response.results.forEach(function (article) {
+                articles.push({
+                    author: null,
+                    description: null,
+                    datePublished: article.webPublicationDate.slice(0, 10),
+                    source: 'The Guardian',
+                    thumbnailUrl: null,
+                    title: article.webTitle,
+                    url: article.webUrl
+                });
+            });
+
+            console.log(articles);
+
+            return articles;
         }
     }, {
         key: 'parseNytJson',
@@ -63,31 +107,11 @@ var Page = function (_React$Component) {
             return articles;
         }
     }, {
-        key: 'parseBingJson',
-        value: function parseBingJson(json) {
-            var articles = [];
-            json.value.forEach(function (article) {
-                var thumbnailExists = article.image;
-                var thumbnailUrl = thumbnailExists ? article.image.thumbnail.contentUrl : null;
-
-                articles.push({
-                    author: null,
-                    description: article.description,
-                    datePublished: article.datePublished.slice(0, 10),
-                    source: article.provider[0].name,
-                    thumbnailUrl: thumbnailUrl,
-                    title: article.name,
-                    url: article.url
-                });
-            });
-
-            return articles;
-        }
-    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            // this.fetchArticles('https://api.bing.microsoft.com/v7.0/news?subscription-key=c214921f95324775a0c1fe7cc61ae74b', this.parseBingJson, 'bing'); // 1000 calls per month
+            this.fetchArticles('https://content.guardianapis.com/search?api-key=7f46d694-03c3-4369-933b-31ade0ab34ee', this.parseGuardianJson, 'guardian');
             this.fetchArticles('https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json?api-key=i1ARVGjJRKgBIBXtlFyC3Nw9UyGMC96p', this.parseNytJson, 'nyt');
-            this.fetchArticles('https://api.bing.microsoft.com/v7.0/news?subscription-key=c214921f95324775a0c1fe7cc61ae74b', this.parseBingJson, 'bing'); // 1000 calls per month
         }
     }, {
         key: 'renderArticle',
@@ -105,7 +129,7 @@ var Page = function (_React$Component) {
                 articles = _state.articles,
                 isLoaded = _state.isLoaded;
 
-            if (!isLoaded.bing || !isLoaded.nyt) {
+            if ( /* !isLoaded.bing || */!isLoaded.guardian || !isLoaded.nyt) {
                 return React.createElement(
                     'div',
                     { className: 'page' },
