@@ -22,13 +22,14 @@ var Page = function (_React$Component) {
     }
 
     _createClass(Page, [{
-        key: "componentDidMount",
+        key: 'componentDidMount',
         value: function componentDidMount() {
             var _this2 = this;
 
             var promises = [];
-            // promises.push(fetchArticles(this, 'cnn'));
-            // promises.push(fetchArticles(this, 'fox'));
+            promises.push(fetchArticles(this, 'cnn'));
+            promises.push(fetchArticles(this, 'fox'));
+            promises.push(fetchArticles(this, 'huffingtonPost'));
             promises.push(fetchArticles(this, 'nyt'));
 
             Promise.all(promises).then(function () {
@@ -36,14 +37,14 @@ var Page = function (_React$Component) {
             });
         }
     }, {
-        key: "renderArticle",
+        key: 'renderArticle',
         value: function renderArticle(article) {
             return React.createElement(Article, {
                 article: article
             });
         }
     }, {
-        key: "render",
+        key: 'render',
         value: function render() {
             var _this3 = this;
 
@@ -53,18 +54,20 @@ var Page = function (_React$Component) {
 
             if (!this.state.isLoaded) {
                 return React.createElement(
-                    "div",
-                    { className: "page" },
-                    "Loading..."
+                    'div',
+                    { className: 'page' },
+                    'Loading...'
                 );
             } else {
-                // articles.sort((a, b) => (a.datePublished < b.datePublished) ? 1 : -1);
+                articles.sort(function (a, b) {
+                    return a.datePublished < b.datePublished ? 1 : -1;
+                });
                 var articleComponents = articles.map(function (article) {
                     return _this3.renderArticle(article);
                 });
                 return React.createElement(
-                    "div",
-                    { className: "page" },
+                    'div',
+                    { className: 'page' },
                     articleComponents
                 );
             }
