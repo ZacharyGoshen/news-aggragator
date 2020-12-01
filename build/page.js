@@ -22,16 +22,20 @@ var Page = function (_React$Component) {
     }
 
     _createClass(Page, [{
-        key: "componentDidMount",
+        key: 'componentDidMount',
         value: function componentDidMount() {
             var _this2 = this;
 
             var promises = [];
-            // promises.push(fetchArticles(this, 'cnn'));
-            // promises.push(fetchArticles(this, 'fox'));
-            // promises.push(fetchArticles(this, 'huffingtonPost'));
-            // promises.push(fetchArticles(this, 'npr'));
-            // promises.push(fetchArticles(this, 'nyt'));
+            promises.push(fetchArticles(this, 'abc'));
+            promises.push(fetchArticles(this, 'cbs'));
+            promises.push(fetchArticles(this, 'cnn'));
+            promises.push(fetchArticles(this, 'fox'));
+            promises.push(fetchArticles(this, 'huffingtonPost'));
+            promises.push(fetchArticles(this, 'laTimes'));
+            promises.push(fetchArticles(this, 'newsWeek'));
+            promises.push(fetchArticles(this, 'npr'));
+            promises.push(fetchArticles(this, 'nyt'));
             promises.push(fetchArticles(this, 'politico'));
 
             Promise.all(promises).then(function () {
@@ -39,14 +43,14 @@ var Page = function (_React$Component) {
             });
         }
     }, {
-        key: "renderArticle",
+        key: 'renderArticle',
         value: function renderArticle(article) {
             return React.createElement(Article, {
                 article: article
             });
         }
     }, {
-        key: "render",
+        key: 'render',
         value: function render() {
             var _this3 = this;
 
@@ -56,9 +60,9 @@ var Page = function (_React$Component) {
 
             if (!this.state.isLoaded) {
                 return React.createElement(
-                    "div",
-                    { className: "page" },
-                    "Loading..."
+                    'div',
+                    { className: 'page' },
+                    'Loading...'
                 );
             } else {
                 // articles.sort((a, b) => (a.datePublished < b.datePublished) ? 1 : -1);
@@ -66,8 +70,8 @@ var Page = function (_React$Component) {
                     return _this3.renderArticle(article);
                 });
                 return React.createElement(
-                    "div",
-                    { className: "page" },
+                    'div',
+                    { className: 'page' },
                     articleComponents
                 );
             }

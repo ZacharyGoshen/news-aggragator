@@ -9,11 +9,15 @@ class Page extends React.Component {
 
     componentDidMount() {
         let promises = [];
-        // promises.push(fetchArticles(this, 'cnn'));
-        // promises.push(fetchArticles(this, 'fox'));
-        // promises.push(fetchArticles(this, 'huffingtonPost'));
-        // promises.push(fetchArticles(this, 'npr'));
-        // promises.push(fetchArticles(this, 'nyt'));
+        promises.push(fetchArticles(this, 'abc'));
+        promises.push(fetchArticles(this, 'cbs'));
+        promises.push(fetchArticles(this, 'cnn'));
+        promises.push(fetchArticles(this, 'fox'));
+        promises.push(fetchArticles(this, 'huffingtonPost'));
+        promises.push(fetchArticles(this, 'laTimes'));
+        promises.push(fetchArticles(this, 'newsWeek'));
+        promises.push(fetchArticles(this, 'npr'));
+        promises.push(fetchArticles(this, 'nyt'));
         promises.push(fetchArticles(this, 'politico'));
 
         Promise.all(promises).then(() => this.setState({ isLoaded: true }));
