@@ -27,11 +27,9 @@ var Page = function (_React$Component) {
             var _this2 = this;
 
             var promises = [];
-            // promises.push(fetchArticles(this, 'news'));
-            // promises.push(fetchArticles(this, 'bing')); // 1000 calls per month
-            // promises.push(fetchArticles(this, 'guardian'));
-            // promises.push(fetchArticles(this, 'nyt'));
-            promises.push(fetchArticles(this, 'fox'));
+            // promises.push(fetchArticles(this, 'cnn'));
+            // promises.push(fetchArticles(this, 'fox'));
+            promises.push(fetchArticles(this, 'nyt'));
 
             Promise.all(promises).then(function () {
                 return _this2.setState({ isLoaded: true });
@@ -60,9 +58,7 @@ var Page = function (_React$Component) {
                     "Loading..."
                 );
             } else {
-                articles.sort(function (a, b) {
-                    return a.datePublished < b.datePublished ? 1 : -1;
-                });
+                // articles.sort((a, b) => (a.datePublished < b.datePublished) ? 1 : -1);
                 var articleComponents = articles.map(function (article) {
                     return _this3.renderArticle(article);
                 });

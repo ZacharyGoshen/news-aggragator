@@ -1,56 +1,57 @@
 const apiData = {
+    cnn: {
+        parseFunction: parseCnnXml,
+        url: 'http://rss.cnn.com/rss/cnn_topstories.rss'
+    },
     fox: {
+        parseFunction: parseFoxXml,
         url: 'http://feeds.foxnews.com/foxnews/latest'
+    },
+    nyt: {
+        parseFunction: parseNytXml,
+        url: 'http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml'
     }
-    // bing: {
-    //     apiKey: 'subscription-key=c214921f95324775a0c1fe7cc61ae74b',
-    //     parsingFunction: parseBingJson,
-    //     url: 'https://api.bing.microsoft.com/v7.0/news'
-    // },
-    // guardian: {
-    //     apiKey: 'api-key=7f46d694-03c3-4369-933b-31ade0ab34ee',
-    //     parsingFunction: parseGuardianJson,
-    //     url: 'https://content.guardianapis.com/search'
-    // },
-    // news: {
-    //     apiKey: 'apiKey=41d8a37fbb9742ffaa0e71780918f4bb',
-    //     paringFunction: parseNewsApiJson,
-    //     url: 'https://cors-anywhere.herokuapp.com/http://newsapi.org/v2/top-headlines?country=us&'
-    // },
-    // nyt: {
-    //     apiKey: 'api-key=i1ARVGjJRKgBIBXtlFyC3Nw9UyGMC96p',
-    //     parsingFunction: parseNytJson,
-    //     url: 'https://api.nytimes.com/svc/mostpopular/v2/viewed/1.json'
-    // }
 };
-
-// function fetchArticles(page, source) {
-//     const { apiKey, parsingFunction, url } = apiData[source];
-//     return fetch(url + '?' + apiKey)
-//         .then(result => result.json())
-//         .then(
-//             (json) => {
-//                 let articles = page.state.articles.concat(parsingFunction(json));
-//                 page.setState({
-//                     articles: articles
-//                 });
-//             },
-//             (error) => {
-//             },
-//         )
-// }
 
 function fetchArticles(page, source) {
     const proxy = 'https://cors-anywhere.herokuapp.com/';
-    const { url } = apiData[source];
+    const { parseFunction, url } = apiData[source];
     return fetch(proxy + url)
         .then(response => response.text())
         .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
         .then(xml => {
             page.setState({
-                articles: parseFoxXml(xml)
+                articles: page.state.articles.concat(parseFunction(xml))
             })
         });
+}
+
+function parseCnnXml(xml) {
+    let articles = [];
+    xml.querySelectorAll('item').forEach(item => {
+        const hasDatePublished = item.querySelector('pubDate');
+        const datePublished = hasDatePublished ? item.querySelector('pubDate').innerHTML : "Not a real article";
+
+        const hasDescription = item.querySelector('description').innerHTML.split('&lt')[0].length;
+        const description = hasDescription ? item.querySelector('description').innerHTML.split('&lt')[0] : null;
+
+        const hasThumbnail = hasDatePublished && (item.querySelector('pubDate').nextElementSibling.tagName == 'media:group');
+        const thumbnailUrl = hasThumbnail ? item.querySelector('pubDate').nextElementSibling.children[0].getAttribute('url') : null;
+
+        if (hasDescription) {
+            articles.push({
+                author: null,
+                description: description,
+                datePublished: datePublished,
+                source: 'CNN',
+                thumbnailUrl: thumbnailUrl,
+                title: item.querySelector('title').innerHTML.slice(9, -3),
+                url: item.querySelector('link').innerHTML,
+            });
+        }
+    });
+
+    return articles;
 }
 
 function parseFoxXml(xml) {
@@ -69,70 +70,28 @@ function parseFoxXml(xml) {
             url: item.querySelector('link').innerHTML,
         });
     });
+
     return articles;
 }
 
-// function parseBingJson(json) {
-//     let articles = [];
-//     json.value.forEach(article => {
-//         const thumbnailExists = article.image;
-//         const thumbnailUrl = thumbnailExists ? article.image.thumbnail.contentUrl : null;
-
-//         articles.push({
-//             author: null,
-//             description: article.description,
-//             datePublished: article.datePublished.slice(0, 10),
-//             source: article.provider[0].name,
-//             thumbnailUrl: thumbnailUrl,
-//             title: article.name,
-//             url: article.url
-//         });
-//     });
-
-//     return articles;
-// }
-
-// function parseGuardianJson(json) {
-//     let articles = [];
-//     json.response.results.forEach(article => {
-//         articles.push({
-//             author: null,
-//             description: null,
-//             datePublished: article.webPublicationDate.slice(0, 10),
-//             source: 'The Guardian',
-//             thumbnailUrl: null,
-//             title: article.webTitle,
-//             url: article.webUrl
-//         });
-//     });
-
-//     console.log(articles);
-
-//     return articles;
-// }
-
-// function parseNewsApiJson(json) {
-//     console.log(json);
-
-//     let articles = [];
-//     return articles;
-// }
-
-function parseNytJson(json) {
+function parseNytXml(xml) {
+    console.log(xml);
     let articles = [];
-    json.results.forEach(article => {
-        const author = article.byline.slice(3);
-        const thumbnailExists = article.media.length;
-        const thumbnailUrl = thumbnailExists ? article.media[0]["media-metadata"][2].url : null;
+    xml.querySelectorAll('item').forEach(item => {
+        const hasAuthor = item.querySelector('description').nextElementSibling.tagName == 'dc:creator'
+        const author = hasAuthor ? item.querySelector('description').nextElementSibling.innerHTML : null;
+
+        const hasThumbnail = item.children[item.children.length - 3].tagName == 'media:content';
+        const thumbnailUrl = hasThumbnail ? item.children[item.children.length - 3].getAttribute('url') : null;
 
         articles.push({
             author: author,
-            description: article.abstract,
-            datePublished: article.published_date,
+            description: item.querySelector('description').innerHTML,
+            datePublished: item.querySelector('pubDate').innerHTML,
             source: 'New York Times',
             thumbnailUrl: thumbnailUrl,
-            title: article.title,
-            url: article.url
+            title: item.querySelector('title').innerHTML,
+            url: item.querySelector('link').innerHTML,
         });
     });
 
