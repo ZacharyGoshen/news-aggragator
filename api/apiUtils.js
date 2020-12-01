@@ -14,7 +14,11 @@ const apiData = {
     nyt: {
         parseFunction: parseNytXml,
         url: 'http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml'
-    }
+    },
+    politico: {
+        parseFunction: parsePoliticoXml,
+        url: 'http://www.politico.com/rss/politicopicks.xml'
+    },
 };
 
 function fetchArticles(page, source) {
@@ -115,6 +119,31 @@ function parseNytXml(xml) {
             title: item.querySelector('title').innerHTML,
             url: item.querySelector('link').innerHTML,
         });
+    });
+
+    return articles;
+}
+
+function parsePoliticoXml(xml) {
+    let articles = [];
+    xml.querySelectorAll('item').forEach(item => {
+        const hasAuthor = item.querySelector('guid').nextElementSibling.tagName == 'dc:creator'
+        const author = hasAuthor ? item.querySelector('guid').nextElementSibling.innerHTML : null;
+
+        const hasDatePublished = item.querySelector('pubDate');
+        const datePublished = hasDatePublished ? new Date(item.querySelector('pubDate').innerHTML).toLocaleString() : null;
+
+        if (hasDatePublished) {
+            articles.push({
+                author: author,
+                description: item.querySelector('description').innerHTML,
+                datePublished: datePublished,
+                source: 'Politico',
+                thumbnailUrl: item.querySelector('guid').nextElementSibling.nextElementSibling.nextElementSibling.getAttribute('url'),
+                title: item.querySelector('title').innerHTML,
+                url: item.querySelector('link').innerHTML,
+            });
+        }
     });
 
     return articles;
