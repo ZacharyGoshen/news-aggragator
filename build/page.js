@@ -30,6 +30,7 @@ var Page = function (_React$Component) {
             // promises.push(fetchArticles(this, 'cnn'));
             // promises.push(fetchArticles(this, 'fox'));
             // promises.push(fetchArticles(this, 'huffingtonPost'));
+            // promises.push(fetchArticles(this, 'npr'));
             // promises.push(fetchArticles(this, 'nyt'));
             promises.push(fetchArticles(this, 'politico'));
 
@@ -60,9 +61,7 @@ var Page = function (_React$Component) {
                     "Loading..."
                 );
             } else {
-                articles.sort(function (a, b) {
-                    return a.datePublished < b.datePublished ? 1 : -1;
-                });
+                // articles.sort((a, b) => (a.datePublished < b.datePublished) ? 1 : -1);
                 var articleComponents = articles.map(function (article) {
                     return _this3.renderArticle(article);
                 });

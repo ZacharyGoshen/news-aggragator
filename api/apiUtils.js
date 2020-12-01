@@ -11,6 +11,10 @@ const apiData = {
         parseFunction: parseHuffingtonPostXml,
         url: 'https://www.huffpost.com/section/front-page/feed?x=1'
     },
+    npr: {
+        parseFunction: parseNprXml,
+        url: 'http://www.npr.org/rss/rss.php?id=1001'
+    },
     nyt: {
         parseFunction: parseNytXml,
         url: 'http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml'
@@ -28,6 +32,9 @@ function fetchArticles(page, source) {
         .then(response => response.text())
         .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
         .then(xml => {
+
+            console.log(xml);
+
             page.setState({
                 articles: page.state.articles.concat(parseFunction(xml))
             })
@@ -40,13 +47,13 @@ function parseCnnXml(xml) {
     let articles = [];
     xml.querySelectorAll('item').forEach(item => {
         const hasDatePublished = item.querySelector('pubDate');
-        const datePublished = hasDatePublished ? new Date(item.querySelector('pubDate').innerHTML).toLocaleString() : "Not a real article";
+        const datePublished = hasDatePublished ? new Date(item.querySelector('pubDate').innerHTML).toLocaleString() : null;
 
         const hasDescription = item.querySelector('description').innerHTML.split('&lt')[0].length;
         const description = hasDescription ? item.querySelector('description').innerHTML.split('&lt')[0] : null;
 
-        const hasThumbnail = hasDatePublished && (item.querySelector('pubDate').nextElementSibling.tagName == 'media:group');
-        const thumbnailUrl = hasThumbnail ? item.querySelector('pubDate').nextElementSibling.children[0].getAttribute('url') : null;
+        const hasThumbnail = hasDatePublished && findElementWithNameSpace(item, 'media:content');
+        const thumbnailUrl = hasThumbnail ? findElementWithNameSpace(item, 'media:content').getAttribute('url') : null;
 
         if (hasDescription) {
             articles.push({
@@ -67,15 +74,12 @@ function parseCnnXml(xml) {
 function parseFoxXml(xml) {
     let articles = [];
     xml.querySelectorAll('item').forEach(item => {
-        const hasAuthor = item.querySelector('description').nextElementSibling.tagName == 'dc:creator'
-        const author = hasAuthor ? item.querySelector('description').nextElementSibling.innerHTML : null;
-
         articles.push({
-            author: author,
+            author: findElementWithNameSpace(item, 'dc:creator').innerHTML,
             description: item.querySelector('description').innerHTML,
             datePublished: new Date(item.querySelector('pubDate').innerHTML).toLocaleString(),
             source: 'Fox News',
-            thumbnailUrl: item.querySelector('link').nextElementSibling.children[0].getAttribute('url'),
+            thumbnailUrl: findElementWithNameSpace(item, 'media:content').getAttribute('url'),
             title: item.querySelector('title').innerHTML,
             url: item.querySelector('link').innerHTML,
         });
@@ -101,14 +105,31 @@ function parseHuffingtonPostXml(xml) {
     return articles;
 }
 
+function parseNprXml(xml) {
+    let articles = [];
+    xml.querySelectorAll('item').forEach(item => {
+        articles.push({
+            author: item.children[item.children.length - 1].innerHTML,
+            description: item.querySelector('description').innerHTML,
+            datePublished: new Date(item.querySelector('pubDate').innerHTML).toLocaleString(),
+            source: 'NPR',
+            thumbnailUrl: findElementWithNameSpace(item, 'content:encoded').innerHTML.slice(19, -4).split('\'')[0],
+            title: item.querySelector('title').innerHTML,
+            url: item.querySelector('link').innerHTML,
+        });
+    });
+
+    return articles;
+}
+
 function parseNytXml(xml) {
     let articles = [];
     xml.querySelectorAll('item').forEach(item => {
-        const hasAuthor = item.querySelector('description').nextElementSibling.tagName == 'dc:creator'
-        const author = hasAuthor ? item.querySelector('description').nextElementSibling.innerHTML : null;
+        const hasAuthor = findElementWithNameSpace(item, 'dc:creator');
+        const author = hasAuthor ? findElementWithNameSpace(item, 'dc:creator').innerHTML : null;
 
-        const hasThumbnail = item.children[item.children.length - 3].tagName == 'media:content';
-        const thumbnailUrl = hasThumbnail ? item.children[item.children.length - 3].getAttribute('url') : null;
+        const hasThumbnail = findElementWithNameSpace(item, 'media:content');
+        const thumbnailUrl = hasThumbnail ? findElementWithNameSpace(item, 'media:content').getAttribute('url') : null;
 
         articles.push({
             author: author,
@@ -127,8 +148,8 @@ function parseNytXml(xml) {
 function parsePoliticoXml(xml) {
     let articles = [];
     xml.querySelectorAll('item').forEach(item => {
-        const hasAuthor = item.querySelector('guid').nextElementSibling.tagName == 'dc:creator'
-        const author = hasAuthor ? item.querySelector('guid').nextElementSibling.innerHTML : null;
+        const hasAuthor = findElementWithNameSpace(item, 'dc:creator');
+        const author = hasAuthor ? findElementWithNameSpace(item, 'dc:creator').innerHTML : null;
 
         const hasDatePublished = item.querySelector('pubDate');
         const datePublished = hasDatePublished ? new Date(item.querySelector('pubDate').innerHTML).toLocaleString() : null;
@@ -139,7 +160,7 @@ function parsePoliticoXml(xml) {
                 description: item.querySelector('description').innerHTML,
                 datePublished: datePublished,
                 source: 'Politico',
-                thumbnailUrl: item.querySelector('guid').nextElementSibling.nextElementSibling.nextElementSibling.getAttribute('url'),
+                thumbnailUrl: findElementWithNameSpace(item, 'media:content').getAttribute('url'),
                 title: item.querySelector('title').innerHTML,
                 url: item.querySelector('link').innerHTML,
             });
@@ -147,4 +168,19 @@ function parsePoliticoXml(xml) {
     });
 
     return articles;
+}
+
+function findElementWithNameSpace(item, name) {
+    for (let i = 0; i < item.children.length; i++) {
+        let child = item.children[i];
+        if (child.tagName == name) {
+            return child;
+        } else if (child.children.length) {
+            const childFound = findElementWithNameSpace(child, name);
+            if (childFound) {
+                return childFound;
+            }
+        }
+    }
+    return null;
 }
