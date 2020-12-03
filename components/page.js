@@ -3,7 +3,8 @@ class Page extends React.Component {
         super(props);
         this.state = {
             articles: [],
-            isLoaded: false
+            isLoaded: false,
+            pageNumber: 0
         }
     }
 
@@ -27,8 +28,21 @@ class Page extends React.Component {
         return (
             <Article
                 article={ article }
+                key={ article.title } 
             >
             </Article>
+        );
+    }
+
+    renderPageNumberButton(pageNumber) {
+        return (
+            <PageNumberButton 
+                isCurrentPage={ this.state.pageNumber == pageNumber }
+                key={ pageNumber }
+                onClick={ () => this.setState({ pageNumber: pageNumber })}
+                pageNumber={ pageNumber }
+            >
+            </PageNumberButton>
         );
     }
 
@@ -41,11 +55,60 @@ class Page extends React.Component {
                 </div>
             );
         } else {
-            // articles.sort((a, b) => (a.datePublished < b.datePublished) ? 1 : -1);
-            const articleComponents = articles.map(article => this.renderArticle(article));
+            articles.sort((a, b) => (a.datePublished < b.datePublished) ? 1 : -1);
+
+            const articlesPerPage = 48;
+            const numberOfPages = Math.ceil(articles.length / articlesPerPage);
+            const indexStart = this.state.pageNumber * articlesPerPage;
+
+            let indexEnd = (this.state.pageNumber + 1) * articlesPerPage;
+            if (indexEnd > articles.length) {
+                indexEnd = articles.length - 1;
+            }
+
+            let articleComponents = [];
+            for (let i = indexStart; i < indexEnd; i++) {
+                let article = articles[i];
+                articleComponents.push(this.renderArticle(article));
+            }
+
+            let pageNumberButtonComponents = [];
+            for (let i = 0; i < numberOfPages; i++) {
+                pageNumberButtonComponents.push(this.renderPageNumberButton(i));
+            }
+
             return (
                 <div className="page">
-                    { articleComponents }
+                    <div className="articles">
+                        { articleComponents }
+                    </div>
+                    <div className="pagination-bar">
+                        <div 
+                            className="pagination-button previous-page-button"
+                            onClick={ 
+                                () => {
+                                    if (this.state.pageNumber != 0) {
+                                        this.setState({ pageNumber: this.state.pageNumber -= 1 });
+                                    }
+                                } 
+                            }
+                        >
+                            Previous
+                        </div>
+                        { pageNumberButtonComponents }
+                        <div 
+                            className="pagination-button next-page-button"
+                            onClick={ 
+                                () => {
+                                    if (this.state.pageNumber != numberOfPages - 1) {
+                                        this.setState({ pageNumber: this.state.pageNumber += 1 });
+                                    }
+                                } 
+                            }
+                        >
+                            Next
+                        </div>
+                    </div>
                 </div>
             );
         }

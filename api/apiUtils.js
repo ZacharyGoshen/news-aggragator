@@ -58,16 +58,22 @@ function fetchArticles(page, source) {
 
 function parseAbcXml(xml) {
     let articles = [];
+    let titles = [];
     xml.querySelectorAll('item').forEach(item => {
-        articles.push({
-            author: null,
-            description: item.querySelector('description').innerHTML.slice(9, -3).split('&')[0],
-            datePublished: new Date(item.querySelector('pubDate').innerHTML).toLocaleString(),
-            source: 'ABC',
-            thumbnailUrl: findElementWithNameSpace(item, 'media:thumbnail').getAttribute('url'),
-            title: item.querySelector('title').innerHTML.slice(10, -3),
-            url: item.querySelector('link').innerHTML,
-        });
+        const title = item.querySelector('title').innerHTML.slice(10, -3);
+
+        if (titles.indexOf(title) == -1) {
+            articles.push({
+                author: null,
+                description: item.querySelector('description').innerHTML.slice(9, -3).split('&')[0],
+                datePublished: new Date(item.querySelector('pubDate').innerHTML),
+                source: 'ABC',
+                thumbnailUrl: findElementWithNameSpace(item, 'media:thumbnail').getAttribute('url'),
+                title: title,
+                url: item.querySelector('link').innerHTML,
+            });
+            titles.push(title);
+        }
     });
 
     return articles;
@@ -79,7 +85,7 @@ function parseCbsXml(xml) {
         articles.push({
             author: null,
             description: item.querySelector('description').innerHTML,
-            datePublished: new Date(item.querySelector('pubDate').innerHTML).toLocaleString(),
+            datePublished: new Date(item.querySelector('pubDate').innerHTML),
             source: 'CBS',
             thumbnailUrl: null,
             title: item.querySelector('title').innerHTML,
@@ -94,7 +100,7 @@ function parseCnnXml(xml) {
     let articles = [];
     xml.querySelectorAll('item').forEach(item => {
         const hasDatePublished = item.querySelector('pubDate');
-        const datePublished = hasDatePublished ? new Date(item.querySelector('pubDate').innerHTML).toLocaleString() : null;
+        const datePublished = hasDatePublished ? new Date(item.querySelector('pubDate').innerHTML) : null;
 
         const hasDescription = item.querySelector('description').innerHTML.split('&lt')[0].length;
         const description = hasDescription ? item.querySelector('description').innerHTML.split('&lt')[0] : null;
@@ -121,10 +127,13 @@ function parseCnnXml(xml) {
 function parseFoxXml(xml) {
     let articles = [];
     xml.querySelectorAll('item').forEach(item => {
+        const hasAuthor = findElementWithNameSpace(item, 'dc:creator');
+        const author = hasAuthor ? findElementWithNameSpace(item, 'dc:creator').innerHTML : null;
+
         articles.push({
-            author: findElementWithNameSpace(item, 'dc:creator').innerHTML,
+            author: author,
             description: item.querySelector('description').innerHTML,
-            datePublished: new Date(item.querySelector('pubDate').innerHTML).toLocaleString(),
+            datePublished: new Date(item.querySelector('pubDate').innerHTML),
             source: 'Fox',
             thumbnailUrl: findElementWithNameSpace(item, 'media:content').getAttribute('url'),
             title: item.querySelector('title').innerHTML,
@@ -141,7 +150,7 @@ function parseHuffingtonPostXml(xml) {
         articles.push({
             author: null,
             description: item.querySelector('description').innerHTML.slice(10, -4),
-            datePublished: new Date(item.querySelector('pubDate').innerHTML).toLocaleString(),
+            datePublished: new Date(item.querySelector('pubDate').innerHTML),
             source: 'Huffington Post',
             thumbnailUrl: item.querySelector('enclosure').getAttribute('url'),
             title: item.querySelector('title').innerHTML.slice(10, -4),
@@ -161,7 +170,7 @@ function parseLaTimesXml(xml) {
         articles.push({
             author: findElementWithNameSpace(item, 'dc:creator').innerHTML,
             description: item.querySelector('description').innerHTML.slice(13, -7),
-            datePublished: new Date(item.querySelector('pubDate').innerHTML).toLocaleString(),
+            datePublished: new Date(item.querySelector('pubDate').innerHTML),
             source: 'LA Times',
             thumbnailUrl: thumbnailUrl,
             title: item.querySelector('title').innerHTML,
@@ -178,7 +187,7 @@ function parseNewsWeekXml(xml) {
         articles.push({
             author: null,
             description: item.querySelector('description').innerHTML.slice(9, -3),
-            datePublished: new Date(item.querySelector('pubDate').innerHTML).toLocaleString(),
+            datePublished: new Date(item.querySelector('pubDate').innerHTML),
             source: 'News Week',
             thumbnailUrl: null,
             title: item.querySelector('title').innerHTML.slice(9, -3),
@@ -195,7 +204,7 @@ function parseNprXml(xml) {
         articles.push({
             author: item.children[item.children.length - 1].innerHTML,
             description: item.querySelector('description').innerHTML,
-            datePublished: new Date(item.querySelector('pubDate').innerHTML).toLocaleString(),
+            datePublished: new Date(item.querySelector('pubDate').innerHTML),
             source: 'NPR',
             thumbnailUrl: findElementWithNameSpace(item, 'content:encoded').innerHTML.slice(19, -4).split('\'')[0],
             title: item.querySelector('title').innerHTML,
@@ -218,7 +227,7 @@ function parseNytXml(xml) {
         articles.push({
             author: author,
             description: item.querySelector('description').innerHTML,
-            datePublished: new Date(item.querySelector('pubDate').innerHTML).toLocaleString(),
+            datePublished: new Date(item.querySelector('pubDate').innerHTML),
             source: 'New York Times',
             thumbnailUrl: thumbnailUrl,
             title: item.querySelector('title').innerHTML,
@@ -236,7 +245,7 @@ function parsePoliticoXml(xml) {
         const author = hasAuthor ? findElementWithNameSpace(item, 'dc:creator').innerHTML : null;
 
         const hasDatePublished = item.querySelector('pubDate');
-        const datePublished = hasDatePublished ? new Date(item.querySelector('pubDate').innerHTML).toLocaleString() : null;
+        const datePublished = hasDatePublished ? new Date(item.querySelector('pubDate').innerHTML) : null;
 
         if (hasDatePublished) {
             articles.push({

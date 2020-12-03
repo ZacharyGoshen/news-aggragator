@@ -32,7 +32,7 @@ var Article = function (_React$Component) {
                 {
                     className: "article-container",
                     onClick: function onClick() {
-                        return location.href = _this2.props.article.url;
+                        return location.href = _this2.state.article.url;
                     }
                 },
                 React.createElement(
@@ -41,32 +41,32 @@ var Article = function (_React$Component) {
                     React.createElement(
                         "div",
                         { className: "article-title" },
-                        this.props.article.title
+                        this.state.article.title
                     ),
                     React.createElement(
                         "div",
                         { className: "article-author" },
-                        this.props.article.author
+                        this.state.article.author
                     ),
                     React.createElement(
                         "div",
                         { className: "article-date" },
-                        this.props.article.datePublished
+                        this.state.article.datePublished.toLocaleString()
                     ),
                     React.createElement(
                         "div",
                         { className: "article-thumbnail" },
-                        React.createElement("img", { src: this.props.article.thumbnailUrl })
+                        React.createElement("img", { src: this.state.article.thumbnailUrl })
                     ),
                     React.createElement(
                         "div",
                         { className: "article-description" },
-                        this.props.article.description
+                        this.state.article.description
                     ),
                     React.createElement(
                         "div",
                         { className: "article-source" },
-                        this.props.article.source
+                        this.state.article.source
                     )
                 )
             );

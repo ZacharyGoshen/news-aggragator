@@ -16,7 +16,8 @@ var Page = function (_React$Component) {
 
         _this.state = {
             articles: [],
-            isLoaded: false
+            isLoaded: false,
+            pageNumber: 0
         };
         return _this;
     }
@@ -46,13 +47,28 @@ var Page = function (_React$Component) {
         key: 'renderArticle',
         value: function renderArticle(article) {
             return React.createElement(Article, {
-                article: article
+                article: article,
+                key: article.title
+            });
+        }
+    }, {
+        key: 'renderPageNumberButton',
+        value: function renderPageNumberButton(pageNumber) {
+            var _this3 = this;
+
+            return React.createElement(PageNumberButton, {
+                isCurrentPage: this.state.pageNumber == pageNumber,
+                key: pageNumber,
+                onClick: function onClick() {
+                    return _this3.setState({ pageNumber: pageNumber });
+                },
+                pageNumber: pageNumber
             });
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
+            var _this4 = this;
 
             var _state = this.state,
                 articles = _state.articles,
@@ -65,14 +81,67 @@ var Page = function (_React$Component) {
                     'Loading...'
                 );
             } else {
-                // articles.sort((a, b) => (a.datePublished < b.datePublished) ? 1 : -1);
-                var articleComponents = articles.map(function (article) {
-                    return _this3.renderArticle(article);
+                articles.sort(function (a, b) {
+                    return a.datePublished < b.datePublished ? 1 : -1;
                 });
+
+                var articlesPerPage = 48;
+                var numberOfPages = Math.ceil(articles.length / articlesPerPage);
+                var indexStart = this.state.pageNumber * articlesPerPage;
+
+                var indexEnd = (this.state.pageNumber + 1) * articlesPerPage;
+                if (indexEnd > articles.length) {
+                    indexEnd = articles.length - 1;
+                }
+
+                var articleComponents = [];
+                for (var i = indexStart; i < indexEnd; i++) {
+                    var article = articles[i];
+                    articleComponents.push(this.renderArticle(article));
+                }
+
+                var pageNumberButtonComponents = [];
+                for (var _i = 0; _i < numberOfPages; _i++) {
+                    pageNumberButtonComponents.push(this.renderPageNumberButton(_i));
+                }
+
                 return React.createElement(
                     'div',
                     { className: 'page' },
-                    articleComponents
+                    React.createElement(
+                        'div',
+                        { className: 'articles' },
+                        articleComponents
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'pagination-bar' },
+                        React.createElement(
+                            'div',
+                            {
+                                className: 'pagination-button previous-page-button',
+                                onClick: function onClick() {
+                                    if (_this4.state.pageNumber != 0) {
+                                        _this4.setState({ pageNumber: _this4.state.pageNumber -= 1 });
+                                    }
+                                }
+                            },
+                            'Previous'
+                        ),
+                        pageNumberButtonComponents,
+                        React.createElement(
+                            'div',
+                            {
+                                className: 'pagination-button next-page-button',
+                                onClick: function onClick() {
+                                    if (_this4.state.pageNumber != numberOfPages - 1) {
+                                        _this4.setState({ pageNumber: _this4.state.pageNumber += 1 });
+                                    }
+                                }
+                            },
+                            'Next'
+                        )
+                    )
                 );
             }
         }

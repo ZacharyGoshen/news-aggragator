@@ -7,15 +7,14 @@
     -webkit-transform: translateY(0px);
     transition: .2s ease-in-out;
     -webkit-transition: .2s ease-in-out;
+    max-width: 300px;
+    min-width: 250px;
 }
 .article:hover {
     box-shadow: -10px 10px 8px #888888;
     cursor: pointer;
     transform: translateY(-10px);
     -webkit-transform: translateY(-10px);
-}
-.article-container {
-    width: 25%;
 }
 .article-author {
     font-size: var(--font-very-small);
