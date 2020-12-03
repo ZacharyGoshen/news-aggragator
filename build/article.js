@@ -27,6 +27,7 @@ var Article = function (_React$Component) {
         value: function render() {
             var _this2 = this;
 
+            var dateString = this.state.article.datePublished ? this.state.article.datePublished.toLocaleString() : null;
             return React.createElement(
                 "div",
                 {
@@ -51,7 +52,7 @@ var Article = function (_React$Component) {
                     React.createElement(
                         "div",
                         { className: "article-date" },
-                        this.state.article.datePublished.toLocaleString()
+                        dateString
                     ),
                     React.createElement(
                         "div",

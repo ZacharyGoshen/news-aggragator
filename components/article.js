@@ -9,6 +9,7 @@ class Article extends React.Component {
     }
 
     render() {
+        const dateString = this.state.article.datePublished ? this.state.article.datePublished.toLocaleString() : null;
         return (
             <div 
                 className="article-container" 
@@ -17,7 +18,7 @@ class Article extends React.Component {
                 <div className="article">
                     <div className="article-title">{ this.state.article.title }</div>
                     <div className="article-author">{ this.state.article.author }</div>
-                    <div className="article-date">{ this.state.article.datePublished.toLocaleString() }</div>
+                    <div className="article-date">{ dateString }</div>
                     <div className="article-thumbnail" >
                         <img src={ this.state.article.thumbnailUrl }></img>
                     </div>

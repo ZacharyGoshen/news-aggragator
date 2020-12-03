@@ -81,16 +81,23 @@ function parseAbcXml(xml) {
 
 function parseCbsXml(xml) {
     let articles = [];
+    let titles = [];
+
     xml.querySelectorAll('item').forEach(item => {
-        articles.push({
-            author: null,
-            description: item.querySelector('description').innerHTML,
-            datePublished: new Date(item.querySelector('pubDate').innerHTML),
-            source: 'CBS',
-            thumbnailUrl: null,
-            title: item.querySelector('title').innerHTML,
-            url: item.querySelector('link').innerHTML,
-        });
+        const title = item.querySelector('title').innerHTML;
+
+        if (titles.indexOf(title) == -1) {
+            articles.push({
+                author: null,
+                description: item.querySelector('description').innerHTML,
+                datePublished: new Date(item.querySelector('pubDate').innerHTML),
+                source: 'CBS',
+                thumbnailUrl: null,
+                title: title,
+                url: item.querySelector('link').innerHTML,
+            });
+            titles.push(title);
+        }
     });
 
     return articles;
