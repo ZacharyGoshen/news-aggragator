@@ -14,194 +14,225 @@ var NavBar = function (_React$Component) {
     function NavBar(props) {
         _classCallCheck(this, NavBar);
 
-        return _possibleConstructorReturn(this, (NavBar.__proto__ || Object.getPrototypeOf(NavBar)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (NavBar.__proto__ || Object.getPrototypeOf(NavBar)).call(this, props));
+
+        _this.state = {
+            filterMenuOpen: false
+        };
+        return _this;
     }
 
     _createClass(NavBar, [{
-        key: "render",
+        key: 'toggleFilterMenu',
+        value: function toggleFilterMenu() {
+            if (this.state.filterMenuOpen) {
+                document.getElementById('filterMenu').classList.add('hidden');
+            } else {
+                document.getElementById('filterMenu').classList.remove('hidden');
+            }
+            this.setState({
+                filterMenuOpen: !this.state.filterMenuOpen
+            });
+        }
+    }, {
+        key: 'render',
         value: function render() {
             var _this2 = this;
 
             console.log(this.props);
             return React.createElement(
-                "div",
-                { id: "navBar" },
+                'div',
+                { id: 'navBar' },
                 React.createElement(
-                    "div",
-                    { id: "navBarLogo" },
-                    "News Aggregator"
+                    'div',
+                    { id: 'navBarLogo' },
+                    'News Aggregator'
                 ),
                 React.createElement(
-                    "div",
-                    {
-                        id: "sortButton",
-                        onClick: function onClick() {
-                            return _this2.props.sortByDate();
-                        }
-                    },
-                    "Sort by Date"
-                ),
-                React.createElement(
-                    "div",
-                    { id: "filterList" },
+                    'div',
+                    { id: 'navBarButtons' },
                     React.createElement(
-                        "div",
-                        { className: "filter-option" },
-                        React.createElement("input", {
+                        'div',
+                        {
+                            id: 'sortButton',
+                            onClick: function onClick() {
+                                return _this2.props.sortByDate();
+                            }
+                        },
+                        'Sort'
+                    ),
+                    React.createElement(
+                        'div',
+                        {
+                            id: 'filterButton',
+                            onClick: function onClick() {
+                                return _this2.toggleFilterMenu();
+                            }
+                        },
+                        'Filter'
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { id: 'filterMenu', className: 'hidden' },
+                    React.createElement(
+                        'div',
+                        { className: 'filter-option' },
+                        React.createElement('input', {
                             checked: this.props.filters['ABC'],
                             onChange: function onChange() {
                                 return _this2.props.filterBySource('ABC');
                             },
-                            type: "checkbox"
+                            type: 'checkbox'
                         }),
                         React.createElement(
-                            "div",
+                            'div',
                             null,
-                            "ABC"
+                            'ABC'
                         )
                     ),
                     React.createElement(
-                        "div",
-                        { className: "filter-option" },
-                        React.createElement("input", {
+                        'div',
+                        { className: 'filter-option' },
+                        React.createElement('input', {
                             checked: this.props.filters['CBS'],
                             onChange: function onChange() {
                                 return _this2.props.filterBySource('CBS');
                             },
-                            type: "checkbox"
+                            type: 'checkbox'
                         }),
                         React.createElement(
-                            "div",
+                            'div',
                             null,
-                            "CBS"
+                            'CBS'
                         )
                     ),
                     React.createElement(
-                        "div",
-                        { className: "filter-option" },
-                        React.createElement("input", {
+                        'div',
+                        { className: 'filter-option' },
+                        React.createElement('input', {
                             checked: this.props.filters['CNN'],
                             onChange: function onChange() {
                                 return _this2.props.filterBySource('CNN');
                             },
-                            type: "checkbox"
+                            type: 'checkbox'
                         }),
                         React.createElement(
-                            "div",
+                            'div',
                             null,
-                            "CNN"
+                            'CNN'
                         )
                     ),
                     React.createElement(
-                        "div",
-                        { className: "filter-option" },
-                        React.createElement("input", {
+                        'div',
+                        { className: 'filter-option' },
+                        React.createElement('input', {
                             checked: this.props.filters['Fox'],
                             onChange: function onChange() {
                                 return _this2.props.filterBySource('Fox');
                             },
-                            type: "checkbox"
+                            type: 'checkbox'
                         }),
                         React.createElement(
-                            "div",
+                            'div',
                             null,
-                            "Fox"
+                            'Fox'
                         )
                     ),
                     React.createElement(
-                        "div",
-                        { className: "filter-option" },
-                        React.createElement("input", {
+                        'div',
+                        { className: 'filter-option' },
+                        React.createElement('input', {
                             checked: this.props.filters['Huffington Post'],
                             onChange: function onChange() {
                                 return _this2.props.filterBySource('Huffington Post');
                             },
-                            type: "checkbox"
+                            type: 'checkbox'
                         }),
                         React.createElement(
-                            "div",
+                            'div',
                             null,
-                            "Huffington Post"
+                            'Huffington Post'
                         )
                     ),
                     React.createElement(
-                        "div",
-                        { className: "filter-option" },
-                        React.createElement("input", {
+                        'div',
+                        { className: 'filter-option' },
+                        React.createElement('input', {
                             checked: this.props.filters['LA Times'],
                             onChange: function onChange() {
                                 return _this2.props.filterBySource('LA Times');
                             },
-                            type: "checkbox"
+                            type: 'checkbox'
                         }),
                         React.createElement(
-                            "div",
+                            'div',
                             null,
-                            "LA Times"
+                            'LA Times'
                         )
                     ),
                     React.createElement(
-                        "div",
-                        { className: "filter-option" },
-                        React.createElement("input", {
+                        'div',
+                        { className: 'filter-option' },
+                        React.createElement('input', {
                             checked: this.props.filters['News Week'],
                             onChange: function onChange() {
                                 return _this2.props.filterBySource('News Week');
                             },
-                            type: "checkbox"
+                            type: 'checkbox'
                         }),
                         React.createElement(
-                            "div",
+                            'div',
                             null,
-                            "News Week"
+                            'News Week'
                         )
                     ),
                     React.createElement(
-                        "div",
-                        { className: "filter-option" },
-                        React.createElement("input", {
+                        'div',
+                        { className: 'filter-option' },
+                        React.createElement('input', {
                             checked: this.props.filters['NPR'],
                             onChange: function onChange() {
                                 return _this2.props.filterBySource('NPR');
                             },
-                            type: "checkbox"
+                            type: 'checkbox'
                         }),
                         React.createElement(
-                            "div",
+                            'div',
                             null,
-                            "NPR"
+                            'NPR'
                         )
                     ),
                     React.createElement(
-                        "div",
-                        { className: "filter-option" },
-                        React.createElement("input", {
+                        'div',
+                        { className: 'filter-option' },
+                        React.createElement('input', {
                             checked: this.props.filters['New York Times'],
                             onChange: function onChange() {
                                 return _this2.props.filterBySource('New York Times');
                             },
-                            type: "checkbox"
+                            type: 'checkbox'
                         }),
                         React.createElement(
-                            "div",
+                            'div',
                             null,
-                            "New York Times"
+                            'New York Times'
                         )
                     ),
                     React.createElement(
-                        "div",
-                        { className: "filter-option" },
-                        React.createElement("input", {
+                        'div',
+                        { className: 'filter-option' },
+                        React.createElement('input', {
                             checked: this.props.filters['Politico'],
                             onChange: function onChange() {
                                 return _this2.props.filterBySource('Politico');
                             },
-                            type: "checkbox"
+                            type: 'checkbox'
                         }),
                         React.createElement(
-                            "div",
+                            'div',
                             null,
-                            "Politico"
+                            'Politico'
                         )
                     )
                 )

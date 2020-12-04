@@ -3,6 +3,21 @@
 class NavBar extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            filterMenuOpen: false
+        }
+    }
+
+    toggleFilterMenu() {
+        if (this.state.filterMenuOpen) {
+            document.getElementById('filterMenu').classList.add('hidden');
+        } else {
+            document.getElementById('filterMenu').classList.remove('hidden');
+        }
+        this.setState({
+            filterMenuOpen: !this.state.filterMenuOpen
+        });
     }
 
     render() {
@@ -10,13 +25,21 @@ class NavBar extends React.Component {
         return (
             <div id="navBar">
                 <div id="navBarLogo">News Aggregator</div>
-                <div 
-                    id="sortButton"
-                    onClick={ () => this.props.sortByDate() }
-                >
-                    Sort by Date
+                <div id="navBarButtons">
+                    <div 
+                        id="sortButton"
+                        onClick={ () => this.props.sortByDate() }
+                    >
+                        Sort
+                    </div>
+                    <div 
+                        id="filterButton"
+                        onClick={ () => this.toggleFilterMenu() }
+                    >
+                        Filter
+                    </div>
                 </div>
-                <div id="filterList">
+                <div id="filterMenu" className="hidden">
                     <div className="filter-option">
                         <input 
                             checked={ this.props.filters['ABC'] }
