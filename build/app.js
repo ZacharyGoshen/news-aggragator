@@ -128,8 +128,57 @@ var App = function (_React$Component) {
                     }),
                     React.createElement(
                         'div',
-                        null,
-                        'Loading...'
+                        { id: 'loadingList' },
+                        React.createElement(
+                            'div',
+                            { id: 'loadingAbc' },
+                            'Loading ABC...'
+                        ),
+                        React.createElement(
+                            'div',
+                            { id: 'loadingCbs' },
+                            'Loading CBS...'
+                        ),
+                        React.createElement(
+                            'div',
+                            { id: 'loadingCnn' },
+                            'Loading CNN...'
+                        ),
+                        React.createElement(
+                            'div',
+                            { id: 'loadingFox' },
+                            'Loading Fox...'
+                        ),
+                        React.createElement(
+                            'div',
+                            { id: 'loadingHuffingtonPost' },
+                            'Loading Hufftington Post...'
+                        ),
+                        React.createElement(
+                            'div',
+                            { id: 'loadingLaTimes' },
+                            'Loading LA Times...'
+                        ),
+                        React.createElement(
+                            'div',
+                            { id: 'loadingNewsWeek' },
+                            'Loading News Week...'
+                        ),
+                        React.createElement(
+                            'div',
+                            { id: 'loadingNpr' },
+                            'Loading NPR...'
+                        ),
+                        React.createElement(
+                            'div',
+                            { id: 'loadingNyt' },
+                            'Loading New York Times...'
+                        ),
+                        React.createElement(
+                            'div',
+                            { id: 'loadingPolitico' },
+                            'Loading Politico...'
+                        )
                     )
                 );
             } else {

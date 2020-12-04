@@ -12,3 +12,10 @@ body, html {
 .hidden {
     display: none;;
 }
+#loadingList {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    padding-top: 100px;
+    width: 100%;
+}

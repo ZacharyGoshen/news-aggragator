@@ -21,7 +21,6 @@ class NavBar extends React.Component {
     }
 
     render() {
-        console.log(this.props);
         return (
             <div id="navBar">
                 <div id="navBarLogo">News Aggregator</div>

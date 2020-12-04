@@ -51,7 +51,6 @@ function fetchArticles(page, source) {
             page.setState({
                 articles: page.state.articles.concat(parseFunction(xml))
             })
-            console.log(source + ' loaded');
         })
         .catch((error) => console.log(error));
 }
@@ -76,6 +75,8 @@ function parseAbcXml(xml) {
         }
     });
 
+    document.getElementById('loadingAbc').innerHTML = 'ABC Loaded';
+
     return articles;
 }
 
@@ -99,6 +100,8 @@ function parseCbsXml(xml) {
             titles.push(title);
         }
     });
+
+    document.getElementById('loadingCbs').innerHTML = 'CBS Loaded';
 
     return articles;
 }
@@ -128,6 +131,8 @@ function parseCnnXml(xml) {
         }
     });
 
+    document.getElementById('loadingCnn').innerHTML = 'CNN Loaded';
+
     return articles;
 }
 
@@ -148,6 +153,8 @@ function parseFoxXml(xml) {
         });
     });
 
+    document.getElementById('loadingFox').innerHTML = 'Fox Loaded';
+
     return articles;
 }
 
@@ -164,6 +171,8 @@ function parseHuffingtonPostXml(xml) {
             url: item.querySelector('link').innerHTML,
         });
     });
+
+    document.getElementById('loadingHuffingtonPost').innerHTML = 'Huffington Post Loaded';
 
     return articles;
 }
@@ -185,6 +194,8 @@ function parseLaTimesXml(xml) {
         });
     });
 
+    document.getElementById('loadingLaTimes').innerHTML = 'LA Times Loaded';
+
     return articles;
 }
 
@@ -202,6 +213,8 @@ function parseNewsWeekXml(xml) {
         });
     });
 
+    document.getElementById('loadingNewsWeek').innerHTML = 'News Week Loaded';
+
     return articles;
 }
 
@@ -218,6 +231,8 @@ function parseNprXml(xml) {
             url: item.querySelector('link').innerHTML,
         });
     });
+
+    document.getElementById('loadingNpr').innerHTML = 'NPR Loaded';
 
     return articles;
 }
@@ -241,6 +256,8 @@ function parseNytXml(xml) {
             url: item.querySelector('link').innerHTML,
         });
     });
+
+    document.getElementById('loadingNyt').innerHTML = 'New York Times Loaded';
 
     return articles;
 }
@@ -266,6 +283,8 @@ function parsePoliticoXml(xml) {
             });
         }
     });
+
+    document.getElementById('loadingPolitico').innerHTML = 'Politico Loaded';
 
     return articles;
 }

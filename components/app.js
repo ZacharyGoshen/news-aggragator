@@ -94,7 +94,18 @@ class App extends React.Component {
                     <NavBar
                         filters={ this.state.filters }
                     ></NavBar>
-                    <div>Loading...</div>
+                    <div id="loadingList">
+                        <div id="loadingAbc">Loading ABC...</div>
+                        <div id="loadingCbs">Loading CBS...</div>
+                        <div id="loadingCnn">Loading CNN...</div>
+                        <div id="loadingFox">Loading Fox...</div>
+                        <div id="loadingHuffingtonPost">Loading Hufftington Post...</div>
+                        <div id="loadingLaTimes">Loading LA Times...</div>
+                        <div id="loadingNewsWeek">Loading News Week...</div>
+                        <div id="loadingNpr">Loading NPR...</div>
+                        <div id="loadingNyt">Loading New York Times...</div>
+                        <div id="loadingPolitico">Loading Politico...</div>
+                    </div>
                 </div>
             );
         } else {

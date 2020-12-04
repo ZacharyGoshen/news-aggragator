@@ -39,7 +39,6 @@ var NavBar = function (_React$Component) {
         value: function render() {
             var _this2 = this;
 
-            console.log(this.props);
             return React.createElement(
                 'div',
                 { id: 'navBar' },
